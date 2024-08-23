@@ -34,7 +34,7 @@ function PlayerList() {
                 .then(data => setPlayers([data]))
                 .catch(error => {
                     console.error('Error:', error);
-                    console.warn('La API no ha devuelto respuestas, asegúrate de que se está ejecutando localmente o en api.furventura.korsinemi.link');
+                    console.warn('La API no ha devuelto respuestas, asegúrate de que se está ejecutando localmente o en fvapi.korsinemi.link');
                 });
         } else {
             fetchPlayers();
