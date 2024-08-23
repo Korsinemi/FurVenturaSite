@@ -1,0 +1,42 @@
+.player-list {
+    padding: 20px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+th {
+    background-color: #282c34;
+    color: white;
+}
+
+button {
+    margin: 5px;
+    padding: 5px 10px;
+    background-color: #282c34;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #444;
+}
+
+input {
+    margin: 5px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
