@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import '../styles/PlayerList.css';
 
 const apiUrl = process.env.NODE_ENV === 'production'
-    ? 'https://api.furventura.korsinemi.link/api/game'
+    ? 'https://fvapi.korsinemi.link/api/game'
     : 'http://localhost:5000/api/game';
 
 function PlayerList() {
