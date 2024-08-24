@@ -1,9 +1,30 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import '../styles/PlayerList.css';
 
-const apiUrl = process.env.NODE_ENV === 'production'
-    ? 'https://fvapi.korsinemi.link/api/game'
-    : 'http://localhost:5000/api/game';
+const checkServer = async () => {
+    try {
+        const response = await fetch('http://localhost:5000/api/game');
+        if (response.ok) {
+            console.log('Servidor local disponible');
+            return 'http://localhost:5000/api/game';
+        } else {
+            throw new Error('Servidor local no disponible');
+        }
+    } catch (error) {
+        console.log('Usando servidor alternativo');
+        return 'https://fvapi.korsinemi.link/api/game';
+    }
+};
+
+const getApiUrl = async () => {
+    if (process.env.NODE_ENV === 'production') {
+        return 'https://fvapi.korsinemi.link/api/game';
+    } else {
+        return await checkServer();
+    }
+};
+
+const apiUrl = await getApiUrl();
 
 function PlayerList() {
     const [players, setPlayers] = useState([]);
@@ -129,6 +150,7 @@ function PlayerList() {
                 onChange={(e) => setNewPlayer({ ...newPlayer, level: parseInt(e.target.value) })}
             />
             <button onClick={handleAddPlayer}>Agregar</button>
+            <p>Usando la API de {apiUrl}</p>
         </div>
     );
 }
