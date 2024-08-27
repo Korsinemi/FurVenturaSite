@@ -2,7 +2,10 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import PlayerList from './components/PlayerList';
+import PlayerList from './pages/PlayerList.js';
+import AnimalList from './pages/AnimalList.js';
+import EventPage from './pages/EventList.js'; // Importar la nueva página
+import About from './pages/About.js';
 import './styles/App.css';
 
 function App() {
@@ -11,8 +14,11 @@ function App() {
             <div className="App">
                 <Header />
                 <Routes>
-                    <Route path="/about" element={<div>Sobre Nosotros</div>} />
+                    <Route path="/assets/logo" element={'./assets/header-logo.png'} />
+                    <Route path="/about" element={<About />} />
                     <Route path="/players" element={<PlayerList />} />
+                    <Route path="/animals" element={<AnimalList />} />
+                    <Route path="/events" element={<EventPage />} />
                     <Route path="/" element={
                         <main>
                             <h2>Bienvenido a FurVentura</h2>

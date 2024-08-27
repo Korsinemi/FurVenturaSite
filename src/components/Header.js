@@ -6,12 +6,15 @@ function Header() {
     return (
         <header>
             <h1>
-                <Link to="/">FurVentura</Link>
+                <Link to="/" className="logo" alt="FurVentura Logo" >
+                </Link>
             </h1>
             <nav>
                 <ul>
                     <li><Link to="/about">Sobre Nosotros</Link></li>
                     <li><Link to="/players">Jugadores</Link></li>
+                    <li><Link to="/animals">Animalitos</Link></li>
+                    <li><Link to="/events">Eventos</Link></li>
                     <li><Link to="/account" className="login">Login</Link></li>
                 </ul>
             </nav>

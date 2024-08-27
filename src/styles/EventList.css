@@ -1,4 +1,19 @@
-.player-list {
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+.event-list {
     padding: 30px;
     background-color: #f0f0f0;
     border-radius: 10px;
@@ -7,52 +22,16 @@
     margin: 30px auto;
 }
 
-.player-list h2 {
+.event-list h2 {
     margin-bottom: 30px;
     font-size: 2.5em;
     color: #333;
     text-align: center;
 }
 
-.search-container {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.search-container input[type="text"] {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-right: 10px;
-    flex: 1;
-    box-sizing: border-box;
-}
-
-.search-container button {
-    border: none;
-    border-radius: 5px;
-    background-color: #66BB6A;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    align-items: center;
-}
-
-.search-container button:hover {
-    background-color: #38723b;
-}
-
-
-.error-message {
-    color: red;
-    font-size: 1em;
-    margin-top: 10px;
-}
-
-.player-list input[type="text"],
-.player-list input[type="number"],
-.player-list select {
+.event-list input[type="text"],
+.event-list input[type="number"],
+.event-list select {
     width: calc(100% - 20px);
     padding: 15px;
     margin-bottom: 20px;
@@ -62,7 +41,7 @@
     box-sizing: border-box;
 }
 
-.player-list button {
+.event-list button {
     padding: 15px 25px;
     margin: 15px 10px;
     border: none;
@@ -74,11 +53,11 @@
     transition: background-color 0.3s ease;
 }
 
-.player-list button:hover {
+.event-list button:hover {
     background-color: #38723b;
 }
 
-.player-list table {
+.event-list table {
     width: 100%;
     border-collapse: separate;
     /* Cambiar a 'separate' para permitir bordes redondeados */
@@ -87,34 +66,34 @@
     margin-bottom: 30px;
 }
 
-.player-list th,
-.player-list td {
+.event-list th,
+.event-list td {
     padding: 20px;
     border: 1px solid #ddd;
     text-align: left;
 }
 
-.player-list th {
+.event-list th {
     background-color: #f8f8f8;
     border-top-left-radius: 15px;
     /* Bordes redondeados en las esquinas superiores */
     border-top-right-radius: 15px;
 }
 
-.player-list td {
+.event-list td {
     border-bottom-left-radius: 15px;
     /* Bordes redondeados en las esquinas inferiores */
     border-bottom-right-radius: 15px;
 }
 
-.player-list img {
+.event-list img {
     width: 80px;
     height: 80px;
     object-fit: cover;
     border-radius: 5px;
 }
 
-.player-list .overlay {
+.event-list .overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -128,7 +107,7 @@
     z-index: 1000;
 }
 
-.player-list .form-panel {
+.event-list .form-panel {
     background-color: #fff;
     padding: 30px;
     border-radius: 10px;
@@ -138,15 +117,15 @@
     animation: slideIn 0.3s ease;
 }
 
-.player-list .form-panel h3 {
+.event-list .form-panel h3 {
     margin-top: 0;
     font-size: 2em;
     color: #333;
 }
 
-.player-list .form-panel input[type="text"],
-.player-list .form-panel input[type="number"],
-.player-list .form-panel select {
+.event-list .form-panel input[type="text"],
+.event-list .form-panel input[type="number"],
+.event-list .form-panel select {
     width: calc(100% - 20px);
     padding: 15px;
     margin-bottom: 20px;
@@ -156,7 +135,7 @@
     box-sizing: border-box;
 }
 
-.player-list .form-panel button {
+.event-list .form-panel button {
     padding: 15px 25px;
     margin: 15px 10px;
     border: none;
@@ -168,19 +147,19 @@
     transition: background-color 0.3s ease;
 }
 
-.player-list .form-panel button:hover {
+.event-list .form-panel button:hover {
     background-color: #218838;
 }
 
-.player-list .form-panel button.cancel {
+.event-list .form-panel button.cancel {
     background-color: #dc3545;
 }
 
-.player-list .form-panel button.cancel:hover {
+.event-list .form-panel button.cancel:hover {
     background-color: #c82333;
 }
 
-.player-list .error {
+.event-list .error {
     color: red;
     font-size: 1em;
     margin-top: -10px;

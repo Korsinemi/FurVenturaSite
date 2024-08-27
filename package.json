@@ -8,8 +8,10 @@
         "@testing-library/user-event": "^13.5.0",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
+        "react-icons": "^5.3.0",
         "react-router-dom": "^6.26.1",
         "react-scripts": "5.0.1",
+        "validator": "^13.12.0",
         "web-vitals": "^2.1.4"
     },
     "scripts": {
@@ -38,7 +40,6 @@
     },
     "description": "El sitio web de FurVentura",
     "main": "./src/index.js",
-    "devDependencies": { },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/Korsinemi/FurVentura.git"

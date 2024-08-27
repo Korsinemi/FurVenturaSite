@@ -1,0 +1,26 @@
+footer {
+    background-color: #384F3A;
+    padding: 20px;
+    color: white;
+    text-align: center;
+    border-radius: 10px;
+    /* Bordes redondeados */
+    margin: 20px;
+    /* Añadir margen para que no toque los bordes */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Sombra para un efecto de elevación */
+    position: relative;
+    /* Posicionamiento relativo */
+}
+
+footer p {
+    margin: 10px 0;
+    /* Margen para los párrafos */
+    font-size: 1em;
+    /* Tamaño de fuente */
+}
+
+footer p:first-child {
+    font-weight: bold;
+    /* Negrita para el primer párrafo */
+}
