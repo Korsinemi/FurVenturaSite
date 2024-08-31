@@ -1,3 +1,5 @@
+/* src/styles/Header.css */
+
 header {
     background-color: #384F3A;
     padding: 20px;
@@ -14,23 +16,18 @@ header {
 header .logo {
     display: inline-block;
     width: 250px;
-    /* Ajusta el ancho de la imagen */
     height: 40px;
-    /* Ajusta la altura de la imagen */
     background-image: url('../assets/header-logo.png');
-    /* Ruta a la imagen */
     background-size: contain;
-    /* Ajusta el tamaño de la imagen */
     background-repeat: no-repeat;
-    /* Evita que la imagen se repita */
     background-position: center;
-    /* Centra la imagen */
 }
 
 nav {
     flex-grow: 1;
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
+    /* Cambio a "flex-end" para alinear los enlaces a la derecha */
 }
 
 nav ul {
@@ -38,12 +35,11 @@ nav ul {
     padding: 0;
     margin: 0;
     display: flex;
-    justify-content: center;
     align-items: center;
+    /* Alineación vertical de los enlaces */
 }
 
 nav ul li {
-    display: inline;
     margin: 0 10px;
 }
 
@@ -61,10 +57,6 @@ nav ul li a:hover {
 }
 
 nav ul li a.login {
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
     background-color: #28a745;
     border-radius: 5px;
     padding: 10px 20px;
@@ -73,5 +65,15 @@ nav ul li a.login {
 
 nav ul li a.login:hover {
     background-color: #218838;
-    transform: translateY(-50%) scale(1.1);
+    transform: scale(1.1);
+}
+
+nav ul li a.logout {
+    background-color: #dc3545;
+    cursor: pointer;
+}
+
+nav ul li a.logout:hover {
+    background-color: #c82333;
+    transform: scale(1.1);
 }

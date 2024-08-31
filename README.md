@@ -4,6 +4,38 @@ Una asombrosa aventura de animales de pixeles
 
 ## Changelog
 
+¡Excelente! Parece que estás avanzando a toda máquina en tu proyecto. Vamos a documentar la nueva versión con base en tus últimas actualizaciones:
+
+### v1.3.0 - 2024-09-10
+
+> **General**
+- Se han realizado numerosas correcciones y mejoras en la aplicación.
+- El código ahora es más robusto y eficiente.
+
+> **Autenticación y Seguridad**
+- Se ha completado la implementación del módulo de autenticación:
+  - Los usuarios pueden registrarse y autenticarse correctamente.
+  - Se ha solucionado un error en el manejo de las solicitudes POST.
+  - Se ha agregado un sistema de validaciones más sólido.
+  - Las rutas ahora están protegidas mediante autenticación.
+  - Se esta trabajando en la integracionde PeludToken.
+  - Se esta trabajando en la integracion futura de Google y Discord.
+- Se ha modificado el sistema de verificación de la API para mayor seguridad.
+
+> **Deprecaciones**
+- **Type de Events**: Se ha mantenido como deprecado y se eliminará completamente en futuras versiones.
+- **Character Routes**: Algunos de los módulos siguen marcados como deprecados. La transición hacia UserRoutes y UserControllers en la API está en curso.
+
+> **Mejoras en la Interfaz**
+- Se ha integrado la librería `react-icons` para personalizar aún más el sitio web.
+- Se han añadido etiquetas de página utilizando `react-helmet`.
+- Se ha incluido un favicon para una mejor experiencia de usuario.
+
+> **Compilación y Privatización de Rutas**
+- El programa se ha compilado en el build final.
+- Se ha implementado un sistema de privatización de rutas para las funciones de autenticación.
+
+
 ### v1.1.0 - 2024-08-27
 
 > **General**

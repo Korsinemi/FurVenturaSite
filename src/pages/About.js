@@ -1,9 +1,13 @@
 import React from 'react';
 import '../styles/About.css';
+import { Helmet } from 'react-helmet';
 
 function About() {
     return (
         <div className="about-page">
+            <Helmet>
+                <title>Sobre FurVentura</title>
+            </Helmet>
             <h1>Sobre FurVentura</h1>
             <div className="story-section">
                 <h2>La Historia de FurVentura</h2>

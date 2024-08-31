@@ -126,7 +126,7 @@ function EventList() {
                         <th>ID</th>
                         <th>Icono</th>
                         <th>Nombre</th>
-                        <th>Tipo</th>
+                        {/* <th>Tipo</th> Deprected */}
                         <th>Recompensas</th>
                         <th>Participantes</th>
                         <th>Duración</th>
@@ -140,7 +140,7 @@ function EventList() {
                             <td>{event.id}</td>
                             <td><img src={event.icon} alt={event.name} /></td>
                             <td>{event.name}</td>
-                            <td>{event.type}</td>
+                            {/* <td>{event.type}</td> Deprected */}
                             <td>{event.rewards}</td>
                             <td>{event.participants}</td>
                             <td>{event.duration}</td>
@@ -170,12 +170,14 @@ function EventList() {
                             value={newEvent.name}
                             onChange={(e) => setNewEvent({ ...newEvent, name: e.target.value })}
                         />
+                        {/*
                         <input
                             type="text"
                             placeholder="Tipo"
                             value={newEvent.type}
                             onChange={(e) => setNewEvent({ ...newEvent, type: e.target.value })}
                         />
+                        Deprected */}
                         <input
                             type="text"
                             placeholder="Recompensas"

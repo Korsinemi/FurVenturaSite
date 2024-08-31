@@ -23,6 +23,8 @@ function Footer() {
         fetchApiVersion();
     }, []);
 
+    const isPeludSession = localStorage.getItem('PeludToken') !== null;
+
     return (
         <footer>
             <p>© 2024 FurVentura & © 2024 Korsinemi</p>

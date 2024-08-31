@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import '../styles/PlayerList.css';
 import { getApiUrl } from '../utils/apiUtils';
+import { Helmet } from 'react-helmet';
 
 function PlayerList() {
     const [players, setPlayers] = useState([]);
@@ -104,6 +105,9 @@ function PlayerList() {
 
     return (
         <div className="player-list">
+            <Helmet>
+                <title>Jugadores | FurVentura</title>
+            </Helmet>
             <h2>Jugadores</h2>
             <div className="search-container">
                 <button onClick={handleSearch}>Buscar</button>

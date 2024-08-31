@@ -1,0 +1,157 @@
+/* src/styles/Auth.css */
+
+/* Estilos generales */
+.auth-module {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.auth-tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.auth-tabs button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 15px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.auth-tabs button.active {
+    background-color: #66BB6A;
+    color: white;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    box-sizing: border-box;
+}
+
+.auth-form button {
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 15px;
+    background-color: #66BB6A;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.auth-form button:hover {
+    background-color: #3b6b3d;
+}
+
+.auth-form button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.auth-form .cancel-button {
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 15px;
+    background-color: #dc3545;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.auth-form .cancel-button:hover {
+    background-color: #8f232e;
+}
+
+.external-auth-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.external-auth-buttons button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 15px;
+    font-size: 14px;
+}
+
+.external-auth-buttons button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.external-auth-buttons .discord {
+    background-color: #7289DA;
+    color: white;
+    cursor: not-allowed;
+}
+
+.external-auth-buttons .google {
+    background-color: #ffffff;
+    color: #333;
+    cursor: not-allowed;
+}
+
+.external-auth-buttons .pelud {
+    background-color: #00BFFF;
+    color: white;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+}
+
+.external-auth-buttons .pelud:hover {
+    background-color: #037da5;
+}
+
+.error {
+    color: red;
+    font-size: 14px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
+
+.success {
+    color: green;
+    font-size: 14px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
+
+.password-input {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.toggle-password-button {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #666;
+}

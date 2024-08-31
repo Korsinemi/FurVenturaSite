@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import validator from 'validator';
 import '../styles/AnimalList.css';
 import { getApiUrl } from '../utils/apiUtils';
+import { Helmet } from 'react-helmet';
 
 function AnimalList() {
     const [animals, setAnimals] = useState([]);
@@ -111,6 +112,9 @@ function AnimalList() {
 
     return (
         <div className="animal-list">
+            <Helmet>
+                <title>Animalitos | FurVentura</title>
+            </Helmet>
             <h2>Animalitos</h2>
             <input
                 type="text"
