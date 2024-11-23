@@ -1,17 +1,18 @@
 export const getApiUrl = async (endpoint) => {
-    try {
-        const isLocalhost = window.location.hostname === 'localhost';
+    const isLocalhost = window.location.hostname === 'localhost';
+    const localApiUrl = `http://localhost:5000/api/${endpoint}`;
+    const productionApiUrl = `https://fvapi.korsinemi.link/api/${endpoint}`;
 
+    try {
         if (isLocalhost) {
             console.log('Usando localhost (entorno de desarrollo)');
-            return `http://localhost:5000/api/${endpoint}`;
+            return localApiUrl;
         } else {
-            return `http://localhost:5000/api/${endpoint}`;
+            return productionApiUrl;
         }
     } catch (error) {
         console.error('Error al conectar con la API real:', error.message);
         console.log('Usando localhost debido al error.');
-        return `http://localhost:5000/api/${endpoint}`;
+        return localApiUrl;
     }
 };
-
