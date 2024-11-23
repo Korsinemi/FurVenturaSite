@@ -1,27 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import PrivateRoute from './utils/privateRoutes.js';
 import PlayerList from './pages/PlayerList.js';
 import AnimalList from './pages/AnimalList.js';
 import EventPage from './pages/EventList.js';
-import AuthPage from './pages/auth.js'
+import AuthPage from './pages/auth.js';
+import AchievementList from './pages/AchPage.js';
 import About from './pages/About.js';
+import Home from './pages/Home.js';
+import ItemPage from './pages/ItemList.js';
+import BlockedPage from './pages/Blocked.js';
 import './styles/App.css';
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [actualUser, setActualUser] = useState('');
+    const [isCheater, setIsCheater] = useState(false);
 
     useEffect(() => {
         const token = localStorage.getItem('Authorization');
+        const cheater = localStorage.getItem('Cheater');
         setIsLoggedIn(!!token);
+        setIsCheater(cheater === 'true');
     }, []);
+
+    useEffect(() => {
+        if (isLoggedIn) {
+            const username = localStorage.getItem('CurrentUser-Username');
+            setActualUser(username);
+        }
+    }, [isLoggedIn]);
 
     const handleLogout = () => {
         localStorage.removeItem('Authorization');
+        localStorage.removeItem('Cheater');
         setIsLoggedIn(false);
+        setIsCheater(false);
     };
 
     return (
@@ -34,19 +50,14 @@ function App() {
                     <Route path="/players" element={<PrivateRoute element={<PlayerList />} isLoggedIn={isLoggedIn} />} />
                     <Route path="/animals" element={<PrivateRoute element={<AnimalList />} isLoggedIn={isLoggedIn} />} />
                     <Route path="/events" element={<PrivateRoute element={<EventPage />} isLoggedIn={isLoggedIn} />} />
-                    <Route path="/" element={
-                        <main>
-                            <Helmet>
-                                <title>FurVentura</title>
-                            </Helmet>
-                            <h2>Bienvenido a FurVentura</h2>
-                            <p>FurVentura es un emocionante juego de aventuras donde puedes explorar un mundo lleno de animales pixelados. Únete a nosotros y descubre todos los misterios que FurVentura tiene para ofrecer.</p>
-                        </main>
-                    } />
+                    <Route path="/items" element={<PrivateRoute element={<ItemPage />} isLoggedIn={isLoggedIn} />} />
+                    <Route path="/achievements" element={<PrivateRoute element={<AchievementList />} isLoggedIn={isLoggedIn} />} />
+                    <Route path="/" element={<Home isLoggedIn={isLoggedIn} actualUser={actualUser} />} />
+                    <Route path="/blocked" element={<BlockedPage />} />
                 </Routes>
                 <Footer />
             </div>
-        </Router >
+        </Router>
     );
 }
 

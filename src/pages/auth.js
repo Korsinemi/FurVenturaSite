@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import validator from 'validator'; // Para la validación de URL
-import '../styles/Auth.css'; // Tu CSS proporcionado
+import validator from 'validator';
+import '../styles/Auth.css';
 import { getApiUrl } from '../utils/apiUtils';
 import { FaCheckCircle, FaTimesCircle, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { Helmet } from 'react-helmet';
@@ -10,11 +10,15 @@ function AuthModule() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [username, setUsername] = useState('');
-    const [successMessage, setSuccessMessage] = useState(''); // Nuevo estado para mensajes de éxito
+    const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [peludToken, setPeludToken] = useState('');
     const [showPeludTokenForm, setShowPeludTokenForm] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+
+    if (localStorage.getItem('Authorization')) {
+        window.location.href = '/';
+    }
 
     const handleAuthSubmit = async (e) => {
         e.preventDefault();
@@ -76,19 +80,70 @@ function AuthModule() {
             const data = await response.json();
 
             if (response.ok) {
-                await setSuccessMessage(
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <FaCheckCircle style={{ marginRight: '8px' }} />
-                        <span>{activeTab === 'login' ? 'Inicio de Sesión' : 'Registro'} exitoso</span>
-                    </div>
-                );
-
                 const token = data.token;
-                localStorage.setItem('Authorization', token);
+                const username = data.user;
 
-                setTimeout(() => {
-                    window.location.href = '/';
-                }, 3000);
+                if (activeTab === 'login') {
+                    const newUrl = await getApiUrl("auth/protected");
+                    const validateToken = await fetch(newUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': token,
+                            'Content-Type': 'application/json',
+                        },
+                    });
+
+                    if (validateToken.ok) {
+                        const check = await validateToken.json();
+                        if (check.error) {
+                            await setErrorMessage(
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <FaTimesCircle style={{ marginRight: '8px' }} />
+                                    <span>Inicio de Sesión fallido: {check.error}</span>
+                                </div>
+                            );
+                            return;
+                        } else {
+                            console.log(check.mensaje);
+                            localStorage.setItem('Authorization', token);
+                            localStorage.setItem('CurrentUser-Username', username);
+                            // Verificar el rol del usuario con el token
+                            const roleUrl = await getApiUrl("auth/admin");
+                            const roleResponse = await fetch(roleUrl, {
+                                method: 'GET',
+                                headers: {
+                                    'Authorization': token,
+                                    'Content-Type': 'application/json',
+                                },
+                            });
+                            if (roleResponse.ok) {
+                                const roleData = await roleResponse.json();
+                                localStorage.setItem('CurrentUser-Role', roleData.user.role);
+                            } else {
+                                localStorage.setItem('CurrentUser-Role', 'user'); // Asignar 'user' como rol por defecto en caso de fallo
+                            }
+                            await setSuccessMessage(
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <FaCheckCircle style={{ marginRight: '8px' }} />
+                                    <span>Inicio de Sesión exitoso</span>
+                                </div>
+                            );
+                            setTimeout(() => {
+                                window.location.href = '/';
+                            }, 3000);
+                        }
+                    } else {
+                        console.error("La verificación del token ha fallado")
+                    }
+                } else if (activeTab === 'register') {
+                    await setSuccessMessage(
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <FaCheckCircle style={{ marginRight: '8px' }} />
+                            <span>Registro exitoso: Ahora puede iniciar sesión</span>
+                        </div>
+                    );
+                    setActiveTab('login');
+                }
             } else {
                 await setErrorMessage(
                     <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -142,7 +197,7 @@ function AuthModule() {
                             className={activeTab === 'login' ? 'active' : ''}
                             onClick={() => setActiveTab('login')}
                         >
-                            <FaCheckCircle style={{ marginRight: '2px', marginBottom: '-3px' }} /> Iniciar Sesión
+                            Iniciar Sesión
                         </button>
                         <button
                             className={activeTab === 'register' ? 'active' : ''}
@@ -152,16 +207,19 @@ function AuthModule() {
                         </button>
                     </div>
                     <form className="auth-form" onSubmit={handleAuthSubmit}>
-                        <input
-                            type="email"
-                            placeholder="Correo Electronico"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <input
+                                type="email"
+                                placeholder="✉️ Correo Electrónico"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                autoComplete="email"
+                            />
+                        </div>
                         {activeTab === 'register' && (
                             <input
                                 type="text"
-                                placeholder="Nombre de usuario"
+                                placeholder="👤 Usuario"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                             />
@@ -169,9 +227,10 @@ function AuthModule() {
                         <div className="password-input">
                             <input
                                 type={showPassword ? 'text' : 'password'}
-                                placeholder="Contraseña"
+                                placeholder="🔑 Contraseña"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
+                                autoComplete="current-password"
                                 style={{ width: 'calc(100% - 50px)', marginRight: '15px' }}
                             />
                             <button

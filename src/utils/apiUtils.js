@@ -1,15 +1,17 @@
 export const getApiUrl = async (endpoint) => {
     try {
-        const response = await fetch(`http://localhost:5000/api/${endpoint}`);
-        if (response.ok) {
-            console.log('Servidor local disponible');
+        const isLocalhost = window.location.hostname === 'localhost';
+
+        if (isLocalhost) {
+            console.log('Usando localhost (entorno de desarrollo)');
             return `http://localhost:5000/api/${endpoint}`;
         } else {
-            console.log('Usando servidor alternativo');
             return `http://localhost:5000/api/${endpoint}`;
         }
     } catch (error) {
-        console.error('Error al verificar el servidor:', error.message);
+        console.error('Error al conectar con la API real:', error.message);
+        console.log('Usando localhost debido al error.');
         return `http://localhost:5000/api/${endpoint}`;
     }
 };
+

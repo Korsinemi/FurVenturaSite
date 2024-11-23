@@ -27,7 +27,6 @@ nav {
     flex-grow: 1;
     display: flex;
     justify-content: flex-end;
-    /* Cambio a "flex-end" para alinear los enlaces a la derecha */
 }
 
 nav ul {
@@ -36,14 +35,15 @@ nav ul {
     margin: 0;
     display: flex;
     align-items: center;
-    /* Alineación vertical de los enlaces */
 }
 
 nav ul li {
     margin: 0 10px;
+    position: relative;
 }
 
-nav ul li a {
+nav ul li a,
+.dropbtn {
     color: white;
     text-decoration: none;
     padding: 10px 20px;
@@ -51,7 +51,8 @@ nav ul li a {
     transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
-nav ul li a:hover {
+nav ul li a:hover,
+.dropbtn:hover {
     background-color: #66BB6A;
     transform: scale(1.1);
 }
@@ -76,4 +77,46 @@ nav ul li a.logout {
 nav ul li a.logout:hover {
     background-color: #c82333;
     transform: scale(1.1);
+}
+
+.dropdown {
+    display: inline-block;
+}
+
+.dropdown .dropbtn {
+    background-color: #28a745;
+    /* Verde de los botones */
+    cursor: pointer;
+    border: none;
+    padding: 10px 20px;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #28a745;
+    /* Verde de los botones */
+    min-width: 160px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    right: 0;
+    /* Posicionamiento a la derecha */
+}
+
+.dropdown-content a {
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-content a:hover,
+.dropdown .dropbtn:hover {
+    background-color: #218838;
+    /* Verde al pasar el mouse */
+}
+
+.show {
+    display: block;
 }

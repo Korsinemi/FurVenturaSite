@@ -1,10 +1,52 @@
-# FurVentura
-
-Una asombrosa aventura de animales de pixeles
-
 ## Changelog
 
-¡Excelente! Parece que estás avanzando a toda máquina en tu proyecto. Vamos a documentar la nueva versión con base en tus últimas actualizaciones:
+### v1.4.0 - 2024-11-23
+
+> **General**
+- Se han realizado numerosas correcciones y mejoras en la aplicación.
+- El código ahora es más robusto y eficiente.
+
+> **Autenticación y Seguridad**
+- Se completó la implementación del módulo de autenticación:
+  - Los usuarios pueden registrarse y autenticarse correctamente.
+  - Se solucionó un error en el manejo de las solicitudes POST.
+  - Se agregó un sistema de validaciones más sólido.
+  - Las rutas ahora están protegidas mediante autenticación.
+  - Se está trabajando en la integración de PeludToken.
+  - Se está trabajando en la integración futura de Google y Discord.
+- Se modificó el sistema de verificación de la API para mayor seguridad.
+- Se agregó una verificación al token para mejorar la autenticación y aumentar la seguridad.
+- Se corrigió un error que almacenaba el token como `undefined`.
+- Se mejoró el manejo de errores.
+
+> **Deprecaciones**
+- **Type de Events**: Se mantiene como deprecado y se eliminará completamente en futuras versiones.
+- **Character Routes**: Se ha marcado como deprecado. La transición hacia UserRoutes y UserControllers en la API está en curso.
+- **Character ha sido deprected**: Se ajustó la página de jugadores al nuevo endpoint de la API.
+- **Game**: Fue reemplazado por Users ya que Game tendrá otra función en el futuro.
+
+> **Mejoras en la Interfaz**
+- Se integró la librería `react-icons` para personalizar aún más el sitio web.
+- Se añadieron etiquetas de página utilizando `react-helmet`.
+- Se incluyó un favicon para una mejor experiencia de usuario.
+- Se mejoró la página de inicio moviéndola a un archivo separado.
+- Se está trabajando en un nuevo diseño un poco más moderno y agradable (alfa aun en desarrollo).
+
+> **Compilación y Privatización de Rutas**
+- El programa se compiló en el build final.
+- Se implementó un sistema de privatización de rutas para las funciones de autenticación.
+- Se agregó una verificación de rol y se está trabajando en un sistema de seguridad avanzada para evitar inyecciones o modificaciones.
+- Se agregó el manejo de rol para todas las páginas.
+- Se agregó la verificación de rol en la página de autenticación.
+
+> **Nuevas Páginas y Funcionalidades**
+- Se agregaron las páginas de items y achievements.
+- Se está trabajando en una página de anticheat.
+- Se mejoró significativamente la velocidad de respuesta.
+- Se agregó una opción de almacenar el nombre del usuario actual.
+- Se actualizaron todas las librerías y se añadieron los `@types` a algunas para un mejor manejo.
+- Se corrigieron errores en la verificación de usuarios.
+- Se agregaron módulos de manejo de roles para admin y user.
 
 ### v1.3.0 - 2024-09-10
 
@@ -13,28 +55,27 @@ Una asombrosa aventura de animales de pixeles
 - El código ahora es más robusto y eficiente.
 
 > **Autenticación y Seguridad**
-- Se ha completado la implementación del módulo de autenticación:
+- Se completó la implementación del módulo de autenticación:
   - Los usuarios pueden registrarse y autenticarse correctamente.
-  - Se ha solucionado un error en el manejo de las solicitudes POST.
-  - Se ha agregado un sistema de validaciones más sólido.
+  - Se solucionó un error en el manejo de las solicitudes POST.
+  - Se agregó un sistema de validaciones más sólido.
   - Las rutas ahora están protegidas mediante autenticación.
-  - Se esta trabajando en la integracionde PeludToken.
-  - Se esta trabajando en la integracion futura de Google y Discord.
-- Se ha modificado el sistema de verificación de la API para mayor seguridad.
+  - Se está trabajando en la integración de PeludToken.
+  - Se está trabajando en la integración futura de Google y Discord.
+- Se modificó el sistema de verificación de la API para mayor seguridad.
 
 > **Deprecaciones**
-- **Type de Events**: Se ha mantenido como deprecado y se eliminará completamente en futuras versiones.
+- **Type de Events**: Se mantiene como deprecado y se eliminará completamente en futuras versiones.
 - **Character Routes**: Algunos de los módulos siguen marcados como deprecados. La transición hacia UserRoutes y UserControllers en la API está en curso.
 
 > **Mejoras en la Interfaz**
-- Se ha integrado la librería `react-icons` para personalizar aún más el sitio web.
-- Se han añadido etiquetas de página utilizando `react-helmet`.
-- Se ha incluido un favicon para una mejor experiencia de usuario.
+- Se integró la librería `react-icons` para personalizar aún más el sitio web.
+- Se añadieron etiquetas de página utilizando `react-helmet`.
+- Se incluyó un favicon para una mejor experiencia de usuario.
 
 > **Compilación y Privatización de Rutas**
-- El programa se ha compilado en el build final.
-- Se ha implementado un sistema de privatización de rutas para las funciones de autenticación.
-
+- El programa se compiló en el build final.
+- Se implementó un sistema de privatización de rutas para las funciones de autenticación.
 
 ### v1.1.0 - 2024-08-27
 
@@ -60,21 +101,27 @@ Una asombrosa aventura de animales de pixeles
 - Babel se incorporó para una gestión más eficiente de datos.
 
 ### v1.0.1 - 2024-08-23
-> General
-- Se cambio de repositorio debido a problemas de compilacion.
-> Novedades
-- Nuevo: Integración de la API para gestionar jugadores.
-> Funcionalidad
+
+> **General**
+- Se cambió de repositorio debido a problemas de compilación.
+
+> **Novedades**
+- Integración de la API para gestionar jugadores.
+
+> **Funcionalidad**
 - Funcionalidad para agregar, editar, eliminar y buscar jugadores.
-> Mejoras
-- Mejora: Manejo de errores mejorado con mensajes de advertencia en la consola.
-- Mejora: Enlace del título “FurVentura” en el encabezado para redirigir a la página de inicio.
-> Correcciones
-- Corrección: Solucionado el problema de rutas en React Router v6, se pasaron todas a v8.
-- Corrección: Solucionado el problema de importación de CSS en el componente Header.
+
+> **Mejoras**
+- Mejora en el manejo de errores con mensajes de advertencia en la consola.
+- Enlace del título “FurVentura” en el encabezado para redirigir a la página de inicio.
+
+> **Correcciones**
+- Solucionado el problema de rutas en React Router v6, se pasaron todas a v8.
+- Solucionado el problema de importación de CSS en el componente Header.
 
 ### v1.0.0 - 2024-08-20
-> lanzamiento
+
+> **Lanzamiento**
 - Lanzamiento inicial: Configuración básica del sitio web.
 - Estructura del proyecto con React.
 - Componentes iniciales: Header, Footer, PlayerList.

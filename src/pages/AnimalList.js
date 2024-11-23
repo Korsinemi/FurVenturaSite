@@ -4,7 +4,7 @@ import '../styles/AnimalList.css';
 import { getApiUrl } from '../utils/apiUtils';
 import { Helmet } from 'react-helmet';
 
-function AnimalList() {
+function AnimalList({ role }) {
     const [animals, setAnimals] = useState([]);
     const [searchId, setSearchId] = useState('');
     const [newAnimal, setNewAnimal] = useState({ name: '', species: '', rarity: '', class: '', imageUrl: '' });
@@ -20,6 +20,8 @@ function AnimalList() {
         };
         fetchApiUrl();
     }, []);
+
+    const token = localStorage.getItem('Authorization');
 
     const fetchAnimals = useCallback(() => {
         if (apiUrl) {
@@ -60,7 +62,10 @@ function AnimalList() {
         }
         fetch(apiUrl, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify(newAnimal),
         })
             .then(response => response.json())
@@ -80,7 +85,10 @@ function AnimalList() {
         }
         fetch(`${apiUrl}/${id}`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify(updatedAnimal),
         })
             .then(response => response.json())
@@ -96,6 +104,9 @@ function AnimalList() {
         if (window.confirm('¿Estás seguro de que deseas eliminar este animal?')) {
             fetch(`${apiUrl}/${id}`, {
                 method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
             })
                 .then(() => fetchAnimals())
                 .catch(error => console.error('Error:', error));
@@ -123,7 +134,7 @@ function AnimalList() {
                 onChange={(e) => setSearchId(e.target.value)}
             />
             <button onClick={handleSearch}>Buscar</button>
-            <button onClick={() => setShowAddForm(true)}>Agregar Nuevo Animalito</button>
+            {role === 'admin' && <button onClick={() => setShowAddForm(true)}>Agregar Nuevo Animalito</button>}
             <table>
                 <thead>
                     <tr>
@@ -133,7 +144,7 @@ function AnimalList() {
                         <th>Rareza</th>
                         <th>Clase</th>
                         <th>Imagen</th>
-                        <th>Acciones</th>
+                        {role === 'admin' && <th>Acciones</th>}
                     </tr>
                 </thead>
                 <tbody>
@@ -148,10 +159,12 @@ function AnimalList() {
                                 <img src={animal.imageUrl} alt={animal.name} />
                                 <p>{animal.imageUrl}</p>
                             </td>
-                            <td>
-                                <button onClick={() => openEditPanel(animal)}>Editar</button>
-                                <button onClick={() => handleDeleteAnimal(animal.id)}>Eliminar</button>
-                            </td>
+                            {role === 'admin' && (
+                                <td>
+                                    <button onClick={() => openEditPanel(animal)}>Editar</button>
+                                    <button onClick={() => handleDeleteAnimal(animal.id)}>Eliminar</button>
+                                </td>
+                            )}
                         </tr>
                     ))}
                 </tbody>

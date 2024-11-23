@@ -2,8 +2,9 @@ import React, { useEffect, useState, useCallback } from 'react';
 import validator from 'validator';
 import '../styles/EventList.css';
 import { getApiUrl } from '../utils/apiUtils';
+import { Helmet } from 'react-helmet';
 
-function EventList() {
+function EventList({ role }) {
     const [events, setEvents] = useState([]);
     const [searchId, setSearchId] = useState('');
     const [newEvent, setNewEvent] = useState({ icon: '', name: '', type: '', rewards: '', participants: 0, duration: '', status: 'active' });
@@ -19,6 +20,8 @@ function EventList() {
         };
         fetchApiUrl();
     }, []);
+
+    const token = localStorage.getItem('Authorization');
 
     const fetchEvents = useCallback(() => {
         if (apiUrl) {
@@ -59,7 +62,10 @@ function EventList() {
         }
         fetch(apiUrl, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify(newEvent),
         })
             .then(response => response.json())
@@ -79,7 +85,10 @@ function EventList() {
         }
         fetch(`${apiUrl}/${id}`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify(updatedEvent),
         })
             .then(response => response.json())
@@ -95,6 +104,9 @@ function EventList() {
         if (window.confirm('¿Estás seguro de que deseas eliminar este evento?')) {
             fetch(`${apiUrl}/${id}`, {
                 method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
             })
                 .then(() => fetchEvents())
                 .catch(error => console.error('Error:', error));
@@ -111,6 +123,9 @@ function EventList() {
 
     return (
         <div className="event-list">
+            <Helmet>
+                <title>Eventos | FurVentura</title>
+            </Helmet>
             <h2>Eventos</h2>
             <input
                 type="text"
@@ -119,19 +134,19 @@ function EventList() {
                 onChange={(e) => setSearchId(e.target.value)}
             />
             <button onClick={handleSearch}>Buscar</button>
-            <button onClick={() => setShowAddForm(true)}>Agregar Nuevo Evento</button>
+            {role === 'admin' && <button onClick={() => setShowAddForm(true)}>Agregar Nuevo Evento</button>}
             <table>
                 <thead>
                     <tr>
                         <th>ID</th>
                         <th>Icono</th>
                         <th>Nombre</th>
-                        {/* <th>Tipo</th> Deprected */}
+                        {/* <th>Tipo</th> Deprecated */}
                         <th>Recompensas</th>
                         <th>Participantes</th>
                         <th>Duración</th>
                         <th>Estado</th>
-                        <th>Acciones</th>
+                        {role === 'admin' && <th>Acciones</th>}
                     </tr>
                 </thead>
                 <tbody>
@@ -140,15 +155,17 @@ function EventList() {
                             <td>{event.id}</td>
                             <td><img src={event.icon} alt={event.name} /></td>
                             <td>{event.name}</td>
-                            {/* <td>{event.type}</td> Deprected */}
+                            {/* <td>{event.type}</td> Deprecated */}
                             <td>{event.rewards}</td>
                             <td>{event.participants}</td>
                             <td>{event.duration}</td>
                             <td>{event.status}</td>
-                            <td>
-                                <button onClick={() => openEditPanel(event)}>Editar</button>
-                                <button onClick={() => handleDeleteEvent(event.id)}>Eliminar</button>
-                            </td>
+                            {role === 'admin' && (
+                                <td>
+                                    <button onClick={() => openEditPanel(event)}>Editar</button>
+                                    <button onClick={() => handleDeleteEvent(event.id)}>Eliminar</button>
+                                </td>
+                            )}
                         </tr>
                     ))}
                 </tbody>
@@ -177,7 +194,7 @@ function EventList() {
                             value={newEvent.type}
                             onChange={(e) => setNewEvent({ ...newEvent, type: e.target.value })}
                         />
-                        Deprected */}
+                        Deprecated */}
                         <input
                             type="text"
                             placeholder="Recompensas"

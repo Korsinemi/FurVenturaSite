@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import packageJson from '../../package.json'; // Asegúrate de ajustar la ruta según tu estructura de carpetas
+import packageJson from '../../package.json';
 import { getApiUrl } from '../utils/apiUtils';
 import '../styles/Footer.css';
 

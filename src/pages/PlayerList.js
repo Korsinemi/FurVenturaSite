@@ -3,7 +3,7 @@ import '../styles/PlayerList.css';
 import { getApiUrl } from '../utils/apiUtils';
 import { Helmet } from 'react-helmet';
 
-function PlayerList() {
+function PlayerList({ role }) {
     const [players, setPlayers] = useState([]);
     const [searchId, setSearchId] = useState('');
     const [newPlayer, setNewPlayer] = useState({ name: '', type: '', level: 1 });
@@ -15,20 +15,35 @@ function PlayerList() {
 
     useEffect(() => {
         const fetchApiUrl = async () => {
-            const url = await getApiUrl('game');
+            const url = await getApiUrl('users');
             setApiUrl(url);
         };
         fetchApiUrl();
     }, []);
 
+    const token = localStorage.getItem('Authorization');
+
     const fetchPlayers = useCallback(() => {
         if (apiUrl) {
-            fetch(apiUrl)
-                .then(response => response.json())
+            fetch(apiUrl, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
                 .then(data => setPlayers(data))
-                .catch(error => console.error('Error:', error));
+                .catch(error => {
+                    console.error('Error fetching players:', error);
+                    setError('Error al obtener la lista de jugadores');
+                });
         }
-    }, [apiUrl]);
+    }, [apiUrl, token]);
 
     useEffect(() => {
         fetchPlayers();
@@ -36,7 +51,12 @@ function PlayerList() {
 
     const handleSearch = () => {
         if (searchId) {
-            fetch(`${apiUrl}/${searchId}`)
+            fetch(`${apiUrl}/${searchId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                }
+            })
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
@@ -45,11 +65,11 @@ function PlayerList() {
                 })
                 .then(data => setPlayers([data]))
                 .catch(error => {
-                    console.error('Error:', error);
-                    console.warn('La API no ha devuelto respuestas, asegúrate de que se está ejecutando localmente o en fvapi.korsinemi.link');
+                    console.error('Error fetching player by ID:', error);
+                    setError('Error al buscar el jugador por ID');
                 });
         } else {
-            setError('Debes poner una ID');
+            setError('Debes ingresar un ID');
             fetchPlayers();
         }
     };
@@ -57,7 +77,10 @@ function PlayerList() {
     const handleAddPlayer = () => {
         fetch(apiUrl, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify(newPlayer),
         })
             .then(response => response.json())
@@ -73,7 +96,10 @@ function PlayerList() {
     const handleEditPlayer = (id, updatedPlayer) => {
         fetch(`${apiUrl}/${id}`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify(updatedPlayer),
         })
             .then(response => response.json())
@@ -89,6 +115,9 @@ function PlayerList() {
         if (window.confirm('¿Estás seguro de que deseas eliminar este jugador?')) {
             fetch(`${apiUrl}/${id}`, {
                 method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
             })
                 .then(() => fetchPlayers())
                 .catch(error => console.error('Error:', error));
@@ -110,7 +139,13 @@ function PlayerList() {
             </Helmet>
             <h2>Jugadores</h2>
             <div className="search-container">
-                <button onClick={handleSearch}>Buscar</button>
+                <button
+                    type="button"
+                    onClick={handleSearch}
+                    style={{ marginTop: '-0.5%' }}
+                >
+                    Buscar
+                </button>
                 <input
                     type="text"
                     placeholder="Buscar por ID"
@@ -119,28 +154,28 @@ function PlayerList() {
                 />
             </div>
             {error && <div className="error-message">{error}</div>}
-            <button onClick={() => setShowAddForm(true)}>Agregar Nuevo Jugador</button>
+            {role === 'admin' && <button onClick={() => setShowAddForm(true)}>Agregar Nuevo Jugador</button>}
             <table>
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Tipo</th>
-                        <th>Nivel</th>
-                        <th>Acciones</th>
+                        <th>Nombre de Usuario</th>
+                        <th>Rol</th>
+                        {role === 'admin' && <th>Acciones</th>}
                     </tr>
                 </thead>
                 <tbody>
                     {players.map(player => (
-                        <tr key={player.id}>
-                            <td>{player.id}</td>
-                            <td>{player.name}</td>
-                            <td>{player.type}</td>
-                            <td>{player.level}</td>
-                            <td>
-                                <button onClick={() => openEditPanel(player)}>Editar</button>
-                                <button onClick={() => handleDeletePlayer(player.id)}>Eliminar</button>
-                            </td>
+                        <tr key={player._id}>
+                            <td>{player._id}</td>
+                            <td>{player.username}</td>
+                            <td>{player.role}</td>
+                            {role === 'admin' && (
+                                <td>
+                                    <button onClick={() => openEditPanel(player)}>Editar</button>
+                                    <button onClick={() => handleDeletePlayer(player._id)}>Eliminar</button>
+                                </td>
+                            )}
                         </tr>
                     ))}
                 </tbody>
@@ -161,6 +196,12 @@ function PlayerList() {
                             placeholder="Tipo"
                             value={newPlayer.type}
                             onChange={(e) => setNewPlayer({ ...newPlayer, type: e.target.value })}
+                        />
+                        <input
+                            type="number"
+                            placeholder="Nivel"
+                            value={newPlayer.level}
+                            onChange={(e) => setNewPlayer({ ...newPlayer, level: parseInt(e.target.value) })}
                         />
                         <input
                             type="number"
@@ -198,7 +239,7 @@ function PlayerList() {
                             onChange={(e) => setEditingPlayer({ ...editingPlayer, level: parseInt(e.target.value) })}
                         />
                         {urlError && <p className="error">{urlError}</p>}
-                        <button onClick={() => handleEditPlayer(editingPlayer.id, editingPlayer)}>Guardar</button>
+                        <button onClick={() => handleEditPlayer(editingPlayer._id, editingPlayer)}>Guardar</button>
                         <button className="cancel" onClick={closeEditPanel}>Cancelar</button>
                     </div>
                 </div>

@@ -17,7 +17,7 @@ function About() {
                 <p>
                     Los jugadores asumen el papel de <strong>Guardianes</strong>, protectores de FurVentura, encargados de cuidar y entrenar a estos Animalitos para mantener el equilibrio y la paz en el reino.
                 </p>
-                <button onClick={() => alert('¡Bienvenido a FurVentura! Prepárate para una aventura mágica.')}>¡Únete a la Aventura!</button>
+                <button className="join-button" onClick={() => window.location.href = '/account'}>¡Únete a la Aventura!</button>
             </div>
             <div className="interactive-section">
                 <h2>Explora FurVentura</h2>
