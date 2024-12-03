@@ -12,8 +12,10 @@ export default {
     mode: 'development', // O 'production'
     entry: './src/index.js',
     output: {
+        filename: 'bundle.js',
         path: path.resolve(__dirname, 'build'),
-        filename: 'bundle.js'
+        clean: true,
+        assetModuleFilename: '[path][name][ext]',
     },
     module: {
         rules: [
