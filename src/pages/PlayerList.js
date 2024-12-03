@@ -1,17 +1,17 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import '../styles/PlayerList.css';
-import { getApiUrl } from '../utils/apiUtils';
+import { getApiUrl } from '../utils/fvUtils.js';
 import { Helmet } from 'react-helmet';
+import '../styles/Lists.css';
 
-function PlayerList({ role }) {
+const PlayerList = ({ role }) => {
     const [players, setPlayers] = useState([]);
     const [searchId, setSearchId] = useState('');
-    const [newPlayer, setNewPlayer] = useState({ name: '', type: '', level: 1 });
     const [editingPlayer, setEditingPlayer] = useState(null);
-    const [showAddForm, setShowAddForm] = useState(false);
-    const [urlError, setUrlError] = useState('');
+    const [showEditForm, setShowEditForm] = useState(false);
     const [apiUrl, setApiUrl] = useState('');
-    const [error, setError] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [messages, setMessages] = useState([]);
+    const [confirmPopup, setConfirmPopup] = useState({ show: false, player: null });
 
     useEffect(() => {
         const fetchApiUrl = async () => {
@@ -40,7 +40,8 @@ function PlayerList({ role }) {
                 .then(data => setPlayers(data))
                 .catch(error => {
                     console.error('Error fetching players:', error);
-                    setError('Error al obtener la lista de jugadores');
+                    setMessages((prev) => [...prev, { type: 'error', text: 'Error al obtener la lista de jugadores' }]);
+                    setTimeout(() => setMessages((prev) => prev.slice(1)), 6000);
                 });
         }
     }, [apiUrl, token]);
@@ -66,49 +67,54 @@ function PlayerList({ role }) {
                 .then(data => setPlayers([data]))
                 .catch(error => {
                     console.error('Error fetching player by ID:', error);
-                    setError('Error al buscar el jugador por ID');
+                    setMessages((prev) => [...prev, { type: 'error', text: 'Error al buscar el jugador por ID' }]);
+                    setTimeout(() => setMessages((prev) => prev.slice(1)), 6000);
                 });
         } else {
-            setError('Debes ingresar un ID');
+            setMessages((prev) => [...prev, { type: 'error', text: 'Debes ingresar un ID' }]);
+            setTimeout(() => setMessages((prev) => prev.slice(1)), 6000);
             fetchPlayers();
         }
     };
 
-    const handleAddPlayer = () => {
-        fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(newPlayer),
-        })
-            .then(response => response.json())
-            .then(() => {
-                fetchPlayers();
-                setNewPlayer({ name: '', type: '', level: 1 });
-                setShowAddForm(false);
-                setUrlError('');
-            })
-            .catch(error => console.error('Error:', error));
-    };
-
     const handleEditPlayer = (id, updatedPlayer) => {
-        fetch(`${apiUrl}/${id}`, {
+        const { username = '', email = '', password = '' } = updatedPlayer;
+
+        if (!username.trim() || !email.trim() || (password && password.length < 6)) {
+            setMessages((prev) => [
+                ...prev,
+                ...(!username.trim() ? [{ type: 'error', text: 'El nombre de usuario no puede quedar vacío' }] : []),
+                ...(!email.trim() ? [{ type: 'error', text: 'El correo electrónico no puede quedar vacío' }] : []),
+                ...(password && password.length < 6 ? [{ type: 'error', text: 'La contraseña debe tener al menos 6 caracteres' }] : []),
+            ]);
+            setTimeout(() => setMessages((prev) => prev.slice(messages.length)), 6000);
+            return;
+        }
+
+        const updates = { username, email };
+        if (password) {
+            updates.password = password;
+        }
+
+        fetch(`${apiUrl}/update/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify(updatedPlayer),
+            body: JSON.stringify(updates),
         })
             .then(response => response.json())
             .then(() => {
                 fetchPlayers();
                 setEditingPlayer(null);
-                setUrlError('');
+                setConfirmPopup({ show: false, player: null });
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => {
+                console.error('Error:', error);
+                setMessages((prev) => [...prev, { type: 'error', text: 'Error al editar el jugador' }]);
+                setTimeout(() => setMessages((prev) => prev.slice(1)), 6000);
+            });
     };
 
     const handleDeletePlayer = (id) => {
@@ -120,20 +126,34 @@ function PlayerList({ role }) {
                 }
             })
                 .then(() => fetchPlayers())
-                .catch(error => console.error('Error:', error));
+                .catch(error => {
+                    console.error('Error:', error);
+                    setMessages((prev) => [...prev, { type: 'error', text: 'Error al eliminar el jugador' }]);
+                    setTimeout(() => setMessages((prev) => prev.slice(1)), 6000);
+                });
         }
     };
 
     const openEditPanel = (player) => {
-        setEditingPlayer(player);
+        setConfirmPopup({ show: true, player });
     };
 
     const closeEditPanel = () => {
-        setEditingPlayer(null);
+        setConfirmPopup({ show: false, player: null });
+    };
+
+    const confirmEdit = (player) => {
+        setEditingPlayer(player);
+        setConfirmPopup({ show: false, player: null });
+        setShowEditForm(true);
+    };
+
+    const toggleShowPassword = () => {
+        setShowPassword(!showPassword);
     };
 
     return (
-        <div className="player-list">
+        <div className="furventura-lists">
             <Helmet>
                 <title>Jugadores | FurVentura</title>
             </Helmet>
@@ -144,22 +164,23 @@ function PlayerList({ role }) {
                     onClick={handleSearch}
                     style={{ marginTop: '-0.5%' }}
                 >
-                    Buscar
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <i className='fa-solid fa-magnifying-glass' />
+                    </div>
                 </button>
                 <input
                     type="text"
-                    placeholder="Buscar por ID"
+                    placeholder="Ingrese el ID a buscar"
                     value={searchId}
                     onChange={(e) => setSearchId(e.target.value)}
                 />
             </div>
-            {error && <div className="error-message">{error}</div>}
-            {role === 'admin' && <button onClick={() => setShowAddForm(true)}>Agregar Nuevo Jugador</button>}
             <table>
                 <thead>
                     <tr>
                         <th>ID</th>
                         <th>Nombre de Usuario</th>
+                        <th>Correo Electrónico</th>
                         <th>Rol</th>
                         {role === 'admin' && <th>Acciones</th>}
                     </tr>
@@ -169,6 +190,7 @@ function PlayerList({ role }) {
                         <tr key={player._id}>
                             <td>{player._id}</td>
                             <td>{player.username}</td>
+                            <td>{player.email}</td>
                             <td>{player.role}</td>
                             {role === 'admin' && (
                                 <td>
@@ -181,65 +203,64 @@ function PlayerList({ role }) {
                 </tbody>
             </table>
 
-            {showAddForm && (
-                <div className="overlay">
-                    <div className="form-panel">
-                        <h3>Agregar Nuevo Jugador</h3>
-                        <input
-                            type="text"
-                            placeholder="Nombre"
-                            value={newPlayer.name}
-                            onChange={(e) => setNewPlayer({ ...newPlayer, name: e.target.value })}
-                        />
-                        <input
-                            type="text"
-                            placeholder="Tipo"
-                            value={newPlayer.type}
-                            onChange={(e) => setNewPlayer({ ...newPlayer, type: e.target.value })}
-                        />
-                        <input
-                            type="number"
-                            placeholder="Nivel"
-                            value={newPlayer.level}
-                            onChange={(e) => setNewPlayer({ ...newPlayer, level: parseInt(e.target.value) })}
-                        />
-                        <input
-                            type="number"
-                            placeholder="Nivel"
-                            value={newPlayer.level}
-                            onChange={(e) => setNewPlayer({ ...newPlayer, level: parseInt(e.target.value) })}
-                        />
-                        {urlError && <p className="error">{urlError}</p>}
-                        <button onClick={handleAddPlayer}>Agregar</button>
-                        <button onClick={() => setShowAddForm(false)}>Cancelar</button>
-                    </div>
-                </div>
-            )}
-
-            {editingPlayer && (
+            {showEditForm && editingPlayer && (
                 <div className="overlay">
                     <div className="form-panel">
                         <h3>Editar Jugador</h3>
                         <input
                             type="text"
-                            placeholder="Nombre"
-                            value={editingPlayer.name}
-                            onChange={(e) => setEditingPlayer({ ...editingPlayer, name: e.target.value })}
+                            placeholder="Nombre de Usuario"
+                            value={editingPlayer.username}
+                            onChange={(e) => setEditingPlayer({ ...editingPlayer, username: e.target.value })}
                         />
                         <input
                             type="text"
-                            placeholder="Tipo"
-                            value={editingPlayer.type}
-                            onChange={(e) => setEditingPlayer({ ...editingPlayer, type: e.target.value })}
+                            placeholder="Correo Electrónico"
+                            value={editingPlayer.email}
+                            onChange={(e) => setEditingPlayer({ ...editingPlayer, email: e.target.value })}
                         />
-                        <input
-                            type="number"
-                            placeholder="Nivel"
-                            value={editingPlayer.level}
-                            onChange={(e) => setEditingPlayer({ ...editingPlayer, level: parseInt(e.target.value) })}
-                        />
-                        {urlError && <p className="error">{urlError}</p>}
+                        <div className="password-input">
+                            <input
+                                type={showPassword ? 'text' : 'password'}
+                                placeholder="Contraseña (dejar en blanco para no cambiar)"
+                                value={editingPlayer.password || ''}
+                                onChange={(e) => setEditingPlayer({ ...editingPlayer, password: e.target.value })}
+                                style={{ width: 'calc(100% - 80px)', marginLeft: '10px' }}
+                                autoComplete='false'
+                            />
+                            <button
+                                type="button"
+                                className="toggle-password-button"
+                                onClick={toggleShowPassword}
+                                style={{ top: '15%', width: '40px', height: '40px', marginRight: '0px' }}
+                            >
+                                {showPassword ? <i className='fa-solid fa-eye-slash' /> : <i className='fa-solid fa-eye' />}
+                            </button>
+                        </div>
                         <button onClick={() => handleEditPlayer(editingPlayer._id, editingPlayer)}>Guardar</button>
+                        <button className="cancel" onClick={() => setShowEditForm(false)}>Cancelar</button>
+                    </div>
+                </div>
+            )}
+
+            <div className="message-container">
+                {messages.map((message, index) => (
+                    <div key={index} className={`${message.type} message`}>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <p>
+                                <i className={message.type === 'success' ? "fa-solid fa-circle-check" : "fa-solid fa-circle-xmark"} style={{ marginRight: '8px' }} />
+                                {message.text}
+                            </p>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {confirmPopup.show && (
+                <div className="overlay">
+                    <div className="form-panel">
+                        <h3>¿Estás seguro de que deseas actualizar los datos de autenticación de {confirmPopup.player.username}? Este cambio es irreversible.</h3>
+                        <button onClick={() => confirmEdit(confirmPopup.player)}>Confirmar</button>
                         <button className="cancel" onClick={closeEditPanel}>Cancelar</button>
                     </div>
                 </div>

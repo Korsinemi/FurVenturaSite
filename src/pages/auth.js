@@ -1,20 +1,17 @@
 import React, { useState } from 'react';
-import validator from 'validator';
-import '../styles/Auth.css';
-import { getApiUrl } from '../utils/apiUtils';
-import { FaCheckCircle, FaTimesCircle, FaEye, FaEyeSlash } from 'react-icons/fa';
+import { getApiUrl, validateForm } from '../utils/fvUtils.js';
 import { Helmet } from 'react-helmet';
+import '../styles/Auth.css';
 
 function AuthModule() {
     const [activeTab, setActiveTab] = useState('login'); // 'login' o 'register'
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [username, setUsername] = useState('');
-    const [successMessage, setSuccessMessage] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
     const [peludToken, setPeludToken] = useState('');
     const [showPeludTokenForm, setShowPeludTokenForm] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const [messages, setMessages] = useState([]);
 
     if (localStorage.getItem('Authorization')) {
         window.location.href = '/';
@@ -22,60 +19,23 @@ function AuthModule() {
 
     const handleAuthSubmit = async (e) => {
         e.preventDefault();
-        if (!validator.isEmail(email) || password.length < 6) {
+
+        const user = { email, password, username, activeTab };
+
+        if (!validateForm(user, null, setMessages, true, 'user')) {
             return;
         }
 
         try {
             const urlNav = await getApiUrl(activeTab === 'login' ? 'auth/login' : 'auth/register');
-            const requestBody = {
-                email,
-                password,
-            };
-
-            if (activeTab === 'register') {
-                requestBody.username = username;
-            }
+            const requestBody = { email, password };
+            if (activeTab === 'register') requestBody.username = username;
 
             const response = await fetch(urlNav, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(requestBody),
             });
-
-            setSuccessMessage('');
-            setErrorMessage('');
-
-            if (activeTab === 'peludtoken') {
-                const peludResponse = await fetch('https://peludapi.korsinemi.link/auth/token', {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ token: peludToken }),
-                });
-
-                if (peludResponse.ok) {
-                    await setSuccessMessage(
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <FaCheckCircle style={{ marginRight: '8px' }} />
-                            <span>Incio con token exitoso</span>
-                        </div>
-                    );
-                    localStorage.setItem('Authorization', peludResponse.authToken);
-                    localStorage.setItem('PeludToken', peludToken);
-                } else {
-                    await setErrorMessage(
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <FaTimesCircle style={{ marginRight: '8px' }} />
-                            <span>Fallo fallido: {peludResponse.error}</span>
-                        </div>
-                    );
-                    console.error('Token Pelud inválido');
-                }
-            }
 
             const data = await response.json();
 
@@ -87,34 +47,23 @@ function AuthModule() {
                     const newUrl = await getApiUrl("auth/protected");
                     const validateToken = await fetch(newUrl, {
                         method: 'GET',
-                        headers: {
-                            'Authorization': token,
-                            'Content-Type': 'application/json',
-                        },
+                        headers: { 'Authorization': token, 'Content-Type': 'application/json' },
                     });
 
                     if (validateToken.ok) {
                         const check = await validateToken.json();
                         if (check.error) {
-                            await setErrorMessage(
-                                <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    <FaTimesCircle style={{ marginRight: '8px' }} />
-                                    <span>Inicio de Sesión fallido: {check.error}</span>
-                                </div>
-                            );
+                            setMessages((prev) => [...prev, { type: 'error', text: `Inicio de Sesión fallido: ${check.error}` }]);
+                            setTimeout(() => setMessages((prev) => prev.slice(1)), 6000);
                             return;
                         } else {
-                            console.log(check.mensaje);
                             localStorage.setItem('Authorization', token);
                             localStorage.setItem('CurrentUser-Username', username);
-                            // Verificar el rol del usuario con el token
+
                             const roleUrl = await getApiUrl("auth/admin");
                             const roleResponse = await fetch(roleUrl, {
                                 method: 'GET',
-                                headers: {
-                                    'Authorization': token,
-                                    'Content-Type': 'application/json',
-                                },
+                                headers: { 'Authorization': token, 'Content-Type': 'application/json' },
                             });
                             if (roleResponse.ok) {
                                 const roleData = await roleResponse.json();
@@ -122,45 +71,55 @@ function AuthModule() {
                             } else {
                                 localStorage.setItem('CurrentUser-Role', 'user'); // Asignar 'user' como rol por defecto en caso de fallo
                             }
-                            await setSuccessMessage(
-                                <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    <FaCheckCircle style={{ marginRight: '8px' }} />
-                                    <span>Inicio de Sesión exitoso</span>
-                                </div>
-                            );
-                            setTimeout(() => {
-                                window.location.href = '/';
-                            }, 3000);
+
+                            setMessages((prev) => [...prev, { type: 'success', text: 'Inicio de Sesión exitoso' }]);
+                            setTimeout(() => { window.location.href = '/'; }, 3000);
                         }
                     } else {
-                        console.error("La verificación del token ha fallado")
+                        console.error("La verificación del token ha fallado");
                     }
                 } else if (activeTab === 'register') {
-                    await setSuccessMessage(
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <FaCheckCircle style={{ marginRight: '8px' }} />
-                            <span>Registro exitoso: Ahora puede iniciar sesión</span>
-                        </div>
-                    );
+                    setMessages((prev) => [...prev, { type: 'success', text: 'Registro exitoso: Ahora puede iniciar sesión' }]);
                     setActiveTab('login');
                 }
             } else {
-                await setErrorMessage(
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <FaTimesCircle style={{ marginRight: '8px' }} />
-                        <span>{activeTab === 'login' ? 'Inicio de Sesión' : 'Registro'} fallido: {data.error}</span>
-                    </div>
-                );
+                setMessages((prev) => [...prev, { type: 'error', text: `${activeTab === 'login' ? 'Inicio de Sesión' : 'Registro'} fallido: ${data.error}` }]);
             }
         } catch (error) {
-            await setErrorMessage(
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <FaTimesCircle style={{ marginRight: '8px' }} />
-                    <span>{activeTab === 'login' ? 'Inicio de Sesión' : 'Registro'} fallido: El servidor no ha respondido</span>
-                </div>
-            );
+            setMessages((prev) => [...prev, { type: 'error', text: `${activeTab === 'login' ? 'Inicio de Sesión' : 'Registro'} fallido: El servidor no ha respondido` }]);
             console.error('Error durante la autenticación:', error);
         }
+    };
+
+    const handlePeludTokenSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            const tokenUrl = await getApiUrl('auth/verify-token');
+            const tokenResponse = await fetch(tokenUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ peludToken }),
+            });
+
+            const tokenData = await tokenResponse.json();
+
+            if (tokenResponse.ok) {
+                setPeludToken('');
+                setShowPeludTokenForm(false);
+                setMessages((prev) => [...prev, { type: 'success', text: 'Token verificado con éxito. Puede continuar con el registro.' }]);
+                setTimeout(() => setMessages((prev) => prev.slice(1)), 6000);
+            } else {
+                setMessages((prev) => [...prev, { type: 'error', text: `Error en la verificación del token: ${tokenData.error}` }]);
+            }
+        } catch (error) {
+            setMessages((prev) => [...prev, { type: 'error', text: 'Error en la verificación del token: El servidor no ha respondido' }]);
+            console.error('Error durante la verificación del token:', error);
+        }
+    };
+
+    const toggleShowPassword = () => {
+        setShowPassword(!showPassword);
     };
 
     const handleShowPeludTokenForm = () => {
@@ -181,9 +140,7 @@ function AuthModule() {
                         value={peludToken}
                         onChange={(e) => setPeludToken(e.target.value)}
                     />
-                    {successMessage && <p className="success">{successMessage}</p>}
-                    {errorMessage && <p className="error">{errorMessage}</p>}
-                    <button className="pelud-token-button" onClick={handleAuthSubmit}>
+                    <button className="pelud-token-button" onClick={handlePeludTokenSubmit}>
                         Verificar PeludToken
                     </button>
                     <button className="cancel-button" onClick={() => setShowPeludTokenForm(false)}>
@@ -236,19 +193,30 @@ function AuthModule() {
                             <button
                                 type="button"
                                 className="toggle-password-button"
-                                onClick={() => setShowPassword(!showPassword)}
+                                onClick={toggleShowPassword}
                                 style={{ top: '16%', width: '40px', height: '39px', marginRight: '-10px' }}
                             >
-                                {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                {showPassword ? <i className='fa-solid fa-eye-slash' /> : <i className='fa-solid fa-eye' />}
                             </button>
                         </div>
 
-                        {successMessage && <p className="success">{successMessage}</p>}
-                        {errorMessage && <p className="error">{errorMessage}</p>}
                         <button type="submit">
                             {activeTab === 'login' ? 'Iniciar Sesión' : 'Registrarse'}
                         </button>
                     </form>
+                    <div className="message-container">
+                        {messages.map((message, index) => (
+                            <div key={index} className={`${message.type} message`}>
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <p>
+                                        <i className={message.type === 'success' ? "fa-solid fa-octagon-check" : "fa-solid fa-octagon-xmark"} style={{ marginRight: '8px' }} />
+                                        {message.text}
+                                    </p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
                     <p>────────────── O ──────────────</p>
                     <p>Próximamente</p>
                     <div className="external-auth-buttons">
@@ -268,4 +236,4 @@ function AuthModule() {
     );
 }
 
-export default AuthModule
+export default AuthModule;

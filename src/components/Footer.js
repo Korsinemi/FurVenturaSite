@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { getApiUrl } from '../utils/fvUtils.js';
 import packageJson from '../../package.json';
-import { getApiUrl } from '../utils/apiUtils';
 import '../styles/Footer.css';
 
 function Footer() {

@@ -1,6 +1,347 @@
-/* src/styles/Auth.css */
+@import url('https://site-assets.fontawesome.com/releases/v6.7.0/css/all.css');
 
-/* Estilos generales */
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.search-container input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+    flex: 1;
+    box-sizing: border-box;
+}
+
+.search-container button {
+    border: none;
+    border-radius: 5px;
+    background-color: #66BB6A;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    align-items: center;
+}
+
+.search-container button:hover {
+    background-color: #38723b;
+}
+
+.auth-module .form-panel label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+/* Estilo para el botón de subir archivos */
+.auth-module input[type="file"] {
+    padding: 15px;
+    margin: 15px 10px;
+    border: none;
+    border-radius: 15px;
+    background-color: #66BB6A;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.auth-module input[type="file"]::file-selector-button {
+    background-color: #66BB6A;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    padding: 15px 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.auth-module input[type="file"]::file-selector-button:hover {
+    background-color: #38723b;
+}
+
+.search-container button,
+.auth-module button,
+.auth-module .form-panel button {
+    padding: 15px 25px;
+    margin: 15px 10px;
+    border: none;
+    border-radius: 15px;
+    background-color: #66BB6A;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.search-container button:hover,
+.auth-module button:hover,
+.auth-module .form-panel button:hover {
+    background-color: #38723b;
+}
+
+.auth-module .form-panel button.cancel {
+    background-color: #dc3545;
+}
+
+.auth-module .form-panel button.cancel:hover {
+    background-color: #c82333;
+}
+
+.auth-module {
+    padding: 30px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 1200px;
+    margin: 30px auto;
+}
+
+.auth-module h2 {
+    margin-bottom: 30px;
+    font-size: 2.5em;
+    color: #333;
+    text-align: center;
+}
+
+.auth-module input[type="text"],
+.auth-module input[type="number"],
+.auth-module select {
+    width: calc(100% - 20px);
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    box-sizing: border-box;
+}
+
+.auth-module button {
+    padding: 15px 25px;
+    margin: 15px 10px;
+    border: none;
+    border-radius: 15px;
+    background-color: #66BB6A;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.auth-module button:hover {
+    background-color: #38723b;
+}
+
+.auth-module table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 30px;
+}
+
+.auth-module th,
+.auth-module td {
+    padding: 20px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.auth-module th {
+    background-color: #f8f8f8;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.auth-module td {
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
+.auth-module img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.auth-module .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease;
+    z-index: 1000;
+}
+
+.auth-module .form-panel {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 500px;
+    max-width: 90%;
+    animation: slideIn 0.3s ease;
+}
+
+.auth-module .form-panel h3 {
+    margin-top: 0;
+    font-size: 2em;
+    color: #333;
+}
+
+.auth-module .form-panel input[type="text"],
+.auth-module .form-panel input[type="number"],
+.auth-module .form-panel select {
+    width: calc(100% - 20px);
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    box-sizing: border-box;
+}
+
+.auth-module .form-panel button {
+    padding: 15px 25px;
+    margin: 15px 10px;
+    border: none;
+    border-radius: 15px;
+    background-color: #28a745;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.auth-module .form-panel button:hover {
+    background-color: #218838;
+}
+
+.auth-module .form-panel button.cancel {
+    background-color: #dc3545;
+}
+
+.auth-module .form-panel button.cancel:hover {
+    background-color: #c82333;
+}
+
+.auth-module .error {
+    color: red;
+    font-size: 1em;
+    margin-top: -10px;
+    margin-bottom: 10px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: white;
+    border: 1px solid red;
+    border-radius: 5px;
+    padding: 10px 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    animation: slideIn 0.5s forwards;
+    z-index: 1001;
+}
+
+.auth-module .success {
+    color: green;
+    font-size: 1em;
+    margin-top: -10px;
+    margin-bottom: 10px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: white;
+    border: 1px solid green;
+    border-radius: 5px;
+    padding: 10px 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    animation: slideIn 0.5s forwards;
+    z-index: 1001;
+}
+
+.auth-module .message-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    /* Espacio entre mensajes */
+    z-index: 1001;
+}
+
+.auth-module .message-container .error,
+.auth-module .message-container .success {
+    animation: slideInFadeOut 6s forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        right: -100%;
+    }
+
+    to {
+        right: 20px;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        right: 20px;
+    }
+
+    to {
+        right: -100%;
+    }
+}
+
+@keyframes slideInFadeOut {
+    0% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    10% {
+        transform: translateX(0%);
+        opacity: 1;
+    }
+
+    90% {
+        transform: translateX(0%);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
 .auth-module {
     display: flex;
     flex-direction: column;

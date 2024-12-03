@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { getApiUrl } from './apiUtils';
+import { getApiUrl } from './fvUtils.js';
 
 function PrivateRoute({ element, isLoggedIn }) {
     const [role, setRole] = useState('');

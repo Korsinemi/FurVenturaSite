@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Header from './components/Header';
-import Footer from './components/Footer';
+
+// Componentes
+import Header from './components/Header.js';
+import Footer from './components/Footer.js';
+
+// Utilidades
 import PrivateRoute from './utils/privateRoutes.js';
+
+// Páginas
 import PlayerList from './pages/PlayerList.js';
 import AnimalList from './pages/AnimalList.js';
 import EventPage from './pages/EventList.js';
@@ -12,6 +18,7 @@ import About from './pages/About.js';
 import Home from './pages/Home.js';
 import ItemPage from './pages/ItemList.js';
 import BlockedPage from './pages/Blocked.js';
+
 import './styles/App.css';
 
 function App() {
